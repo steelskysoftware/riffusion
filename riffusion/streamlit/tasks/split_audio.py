@@ -40,13 +40,7 @@ def render() -> None:
     )
     assert extension is not None
 
-    bitrates = [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
-    bitrate = st.sidebar.selectbox(
-        "Output bitrate",
-        options=bitrates,
-        index=bitrates.index(256),
-    )
-    assert bitrate is not None
+    bitrate = streamlit_util.select_bitrate(st.sidebar)
 
     audio_file = st.file_uploader(
         "Upload audio",

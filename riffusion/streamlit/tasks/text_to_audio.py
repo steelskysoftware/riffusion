@@ -27,6 +27,7 @@ def render() -> None:
     device = streamlit_util.select_device(st.sidebar)
     extension = streamlit_util.select_audio_extension(st.sidebar)
     checkpoint = streamlit_util.select_checkpoint(st.sidebar)
+    bitrate = streamlit_util.select_bitrate(st.sidebar)
 
     with st.form("Inputs"):
         prompt = st.text_input("Prompt")
@@ -110,6 +111,7 @@ def render() -> None:
             image=image,
             params=params,
             device=device,
+            bitrate=bitrate
         )
 
         streamlit_util.display_and_download_audio(

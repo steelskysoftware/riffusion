@@ -28,7 +28,7 @@ def split_audio(
 
     # Save the audio to a temporary file
     audio_path = tmp_dir / "audio.mp3"
-    segment.export(audio_path, format="mp3", bitrate=str(bitrate))
+    segment.export(audio_path, format="mp3", bitrate=f"{str(bitrate)}k")
 
     # Assemble command
     command = [
@@ -43,10 +43,12 @@ def split_audio(
         "--device",
         device if device != "mps" else "cpu",
     ]
-    print(" ".join(command))
-
+    
     if extension == "mp3":
         command.append("--mp3")
+        command.append(f"--mp3-bitrate {bitrate}")
+
+    print(" ".join(command))
 
     # Run demucs
     subprocess.run(

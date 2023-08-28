@@ -207,6 +207,7 @@ def audio_segment_from_spectrogram_image(
     image: Image.Image,
     params: SpectrogramParams,
     device: str = "cuda",
+    bitrate: int = 256
 ) -> pydub.AudioSegment:
     converter = spectrogram_image_converter(params=params, device=device)
     return converter.audio_from_spectrogram_image(image)
@@ -218,11 +219,17 @@ def audio_bytes_from_spectrogram_image(
     params: SpectrogramParams,
     device: str = "cuda",
     output_format: str = "mp3",
+    bitrate: int = 256,
 ) -> io.BytesIO:
-    segment = audio_segment_from_spectrogram_image(image=image, params=params, device=device)
+    segment = audio_segment_from_spectrogram_image(
+        image=image,
+        params=params,
+        device=device,
+        bitrate=bitrate
+    )
 
     audio_bytes = io.BytesIO()
-    segment.export(audio_bytes, format=output_format)
+    segment.export(audio_bytes, format=output_format, bitrate=f"{str(bitrate)}k")
 
     return audio_bytes
 
@@ -248,6 +255,17 @@ def select_device(container: T.Any = st.sidebar) -> str:
 
     return device
 
+
+def select_bitrate(container: T.Any = st.sidebar) -> int:
+    bitrates = [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
+    bitrate = st.sidebar.selectbox(
+        "Output bitrate",
+        options=bitrates,
+        index=bitrates.index(256),
+    )
+    assert bitrate is not None
+
+    return bitrate
 
 def select_audio_extension(container: T.Any = st.sidebar) -> str:
     """
@@ -418,6 +436,7 @@ def display_and_download_audio(
     segment: pydub.AudioSegment,
     name: str,
     extension: str = "mp3",
+    bitrate: int = 256
 ) -> None:
     """
     Display the given audio segment and provide a button to download it with
@@ -425,7 +444,8 @@ def display_and_download_audio(
     """
     mime_type = f"audio/{extension}"
     audio_bytes = io.BytesIO()
-    segment.export(audio_bytes, format=extension)
+
+    segment.export(audio_bytes, format=extension, bitrate=f"{str(bitrate)}k")
     st.audio(audio_bytes, format=mime_type)
 
     st.download_button(

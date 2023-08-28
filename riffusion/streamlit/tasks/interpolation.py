@@ -84,6 +84,7 @@ def render() -> None:
             st.sidebar.image(init_image_file)
 
     alpha_power = st.sidebar.number_input("Alpha Power", value=1.0)
+    bitrate = streamlit_util.select_bitrate(st.sidebar)
 
     show_individual_outputs = st.sidebar.checkbox(
         "Show individual outputs",
@@ -161,6 +162,7 @@ def render() -> None:
             init_image=init_image,
             device=device,
             extension=extension,
+            bitrate=bitrate
         )
 
         if show_individual_outputs:
@@ -246,6 +248,7 @@ def run_interpolation(
     checkpoint: str = streamlit_util.DEFAULT_CHECKPOINT,
     device: str = "cuda",
     extension: str = "mp3",
+    bitrate: int = 256,
 ) -> T.Tuple[Image.Image, io.BytesIO]:
     """
     Cached function for riffusion interpolation.
@@ -275,6 +278,7 @@ def run_interpolation(
         params=params,
         device=device,
         output_format=extension,
+        bitrate=bitrate,
     )
 
     return image, audio_bytes

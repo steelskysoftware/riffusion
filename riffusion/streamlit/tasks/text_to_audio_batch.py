@@ -16,6 +16,7 @@ EXAMPLE_INPUT = """
     "num_inference_steps": 50,
     "guidance": 7.0,
     "width": 512,
+    "bitrate": 256
   },
   "entries": [
     {
@@ -55,6 +56,7 @@ def render() -> None:
         )
 
     device = streamlit_util.select_device(st.sidebar)
+    bitrate = streamlit_util.select_bitrate(st.sidebar)
 
     # Upload a JSON file
     json_file = st.file_uploader(
@@ -140,6 +142,7 @@ def render() -> None:
                     scheduler=params.get("scheduler", streamlit_util.SCHEDULER_OPTIONS[0]),
                     height=512,
                     device=device,
+                    bitrate=bitrate
                 )
 
                 if show_images:
@@ -157,6 +160,7 @@ def render() -> None:
                     params=p_spectrogram,
                     device=device,
                     output_format=output_format,
+                    bitrate=bitrate
                 )
                 col.audio(audio_bytes)
 
