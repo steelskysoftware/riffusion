@@ -40,6 +40,14 @@ def render() -> None:
     )
     assert extension is not None
 
+    bitrates = [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
+    bitrate = st.sidebar.selectbox(
+        "Output bitrate",
+        options=bitrates,
+        index=bitrates.index(256),
+    )
+    assert bitrate is not None
+
     audio_file = st.file_uploader(
         "Upload audio",
         type=extension_options,
@@ -69,7 +77,7 @@ def render() -> None:
     segment = streamlit_util.load_audio_file(audio_file)
 
     # Split
-    stems = split_audio_cached(segment, device=device)
+    stems = split_audio_cached(segment, device=device, bitrate)
 
     input_name = Path(audio_file.name).stem
 
@@ -94,6 +102,6 @@ def render() -> None:
 
 @st.cache
 def split_audio_cached(
-    segment: pydub.AudioSegment, device: str = "cuda"
+    segment: pydub.AudioSegment, device: str = "cuda", bitrate: int = 256
 ) -> T.Dict[str, pydub.AudioSegment]:
-    return split_audio(segment, device=device)
+    return split_audio(segment, device=device, bitrate)

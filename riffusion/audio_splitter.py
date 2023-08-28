@@ -19,6 +19,7 @@ def split_audio(
     extension: str = "wav",
     jobs: int = 4,
     device: str = "cuda",
+    bitrate: int = 256
 ) -> T.Dict[str, pydub.AudioSegment]:
     """
     Split audio into stems using demucs.
@@ -27,7 +28,7 @@ def split_audio(
 
     # Save the audio to a temporary file
     audio_path = tmp_dir / "audio.mp3"
-    segment.export(audio_path, format="mp3")
+    segment.export(audio_path, format="mp3", bitrate=str(bitrate))
 
     # Assemble command
     command = [
