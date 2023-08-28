@@ -77,7 +77,7 @@ def render() -> None:
     segment = streamlit_util.load_audio_file(audio_file)
 
     # Split
-    stems = split_audio_cached(segment, device=device, bitrate)
+    stems = split_audio_cached(segment, device=device, bitrate=bitrate)
 
     input_name = Path(audio_file.name).stem
 
@@ -102,6 +102,8 @@ def render() -> None:
 
 @st.cache
 def split_audio_cached(
-    segment: pydub.AudioSegment, device: str = "cuda", bitrate: int = 256
+    segment: pydub.AudioSegment,
+    device: str = "cuda",
+    bitrate: int = 256
 ) -> T.Dict[str, pydub.AudioSegment]:
-    return split_audio(segment, device=device, bitrate)
+    return split_audio(segment, device=device, bitrate=bitrate)
